@@ -1,28 +1,28 @@
 #ifndef __UI_H
 #define __UI_H
 
-#include <EEPROM.h>
-#include <ESPUI.h>
+#include "Stepper.h"
+#include <ArduinoJson.h>
+
 #include <WiFi.h>
-#include <ESPmDNS.h>
-
-//Settings
-#define SLOW_BOOT               0
-#define HOSTNAME                "ESF"
-#define FORCE_USE_HOTSPOT       0 
-
-#define WIFI_SSID               "homenet"
-#define WIFI_PASSWORD           "OrangeTiger11"
-#define DNS_PORT                53
-#define CONNECT_TIMEOUT         28  // seconds * 4
+#include <PubSubClient.h>
 
 class UI
 {
     private:
         void connectWifi(void);
+        void reconnectWifi(void);
+        static void callback(char* topic, byte* message, unsigned int length);
+        
+        DynamicJsonDocument *config;
+        Stepper *stepper;
+
+        WiFiClient wifiClient;
+        PubSubClient pubSubClient;
+
 
     public:
-        UI();
+        UI(DynamicJsonDocument *config, Stepper *stepper);
         void init(void);
         void ISR(void);
 };

@@ -2,21 +2,34 @@
 #include "Stepper.h"
 #include "Encoder.h"
 #include "Core.h"
+#include "UI.h"
 
+// #include <LittleFS.h>
+
+#define CS_USE_LITTLEFS true
+#include "ConfigStorage.h"
+#include <ArduinoJson.h>
+ConfigStorage CS("/prefs.json");
+DynamicJsonDocument config = CS.get();
 
 
 Stepper stepper;
 Encoder encoder;
-Core core(&encoder, &stepper);
+UI ui(&config, &stepper);
+Core core(&encoder, &stepper, &ui);
+
+
+
 
 
 void setup() {
   stepper.initHardware();
   encoder.initHardware();
+  ui.init();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  core.ISR();
 
 }
 

@@ -1,4 +1,5 @@
 #include "Stepper.h"
+#include <math.h>
 
 Stepper :: Stepper(void)
 {
@@ -26,4 +27,28 @@ void Stepper :: ISR(void)
             // update the UI to say we are moving
         }
     }
+}
+
+long distToSteps(float distance)
+{
+    long steps = round(distance * STEPS_PER_MM);
+    return steps;    
+}
+
+
+void Stepper :: move(float distance)
+{
+    long steps = distToSteps(distance);
+    this->accelStepper.move(steps);
+}
+
+void Stepper :: moveTo(float position)
+{
+    long steps = distToSteps(position);
+    this->accelStepper.moveTo(steps);
+}
+
+long Stepper :: distanceToGo(void)
+{
+    return this->accelStepper.distanceToGo();
 }
